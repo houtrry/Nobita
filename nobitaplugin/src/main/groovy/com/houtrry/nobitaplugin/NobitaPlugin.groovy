@@ -1,4 +1,4 @@
-package com.houtrry.nobitaplugin.plugin
+package com.houtrry.nobitaplugin
 
 import com.android.build.gradle.AppExtension
 import org.gradle.api.Plugin

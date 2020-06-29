@@ -25,3 +25,14 @@ uploadArchives {
         }
     }
 }
+
+sourceSets {
+    main {
+        groovy {
+            srcDir 'src/main/groovy'
+        }
+        resources {
+            srcDir 'src/main/resources'
+        }
+    }
+}
