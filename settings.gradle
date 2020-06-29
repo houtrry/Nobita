@@ -1,0 +1,4 @@
+include ':nobitaplugin'
+include ':nobita'
+include ':app'
+rootProject.name = "Nobita"
