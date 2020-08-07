@@ -132,7 +132,10 @@ public class ConsumingTimeMethodVisitor extends AdviceAdapter {
         mv.visitVarInsn(LLOAD, timeLocalIndex);
         mv.visitInsn(LSUB);//此处的值在栈顶
         mv.visitVarInsn(LSTORE, timeLocalIndex);//因为后面要用到这个值所以先将其保存到本地变量表中
-        int stringBuilderIndex = newLocal(Type.getType("java/lang/StringBuilder"));
+
+
+//        int stringBuilderIndex = newLocal(Type.getType("java/lang/StringBuilder"));
+        int stringBuilderIndex = newLocal(Type.getType(StringBuilder.class));
         mv.visitTypeInsn(Opcodes.NEW, "java/lang/StringBuilder");
         mv.visitInsn(Opcodes.DUP);
         mv.visitMethodInsn(Opcodes.INVOKESPECIAL, "java/lang/StringBuilder", "<init>", "()V", false);
@@ -150,6 +153,23 @@ public class ConsumingTimeMethodVisitor extends AdviceAdapter {
         mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/lang/StringBuilder", "toString", "()Ljava/lang/String;", false);
         mv.visitMethodInsn(Opcodes.INVOKESTATIC, "android/util/Log", "d", "(Ljava/lang/String;Ljava/lang/String;)I", false);//注意： Log.d 方法是有返回值的，需要 pop 出去
         mv.visitInsn(Opcodes.POP);//插入字节码后要保证栈的清洁，不影响原来的逻辑，否则就会产生异常，也会对其他框架处理字节码造成影响
+
+//        mv.visitFieldInsn(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;");
+//        mv.visitTypeInsn(NEW, "java/lang/StringBuilder");
+//        mv.visitInsn(DUP);
+//        mv.visitMethodInsn(INVOKESPECIAL, "java/lang/StringBuilder", "<init>", "()V", false);
+//        mv.visitLdcInsn("costTime is ");
+//        mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(Ljava/lang/String;)Ljava/lang/StringBuilder;", false);
+//        mv.visitMethodInsn(INVOKESTATIC, "java/lang/System", "currentTimeMillis", "()J", false);
+//        mv.visitVarInsn(LLOAD, timeLocalIndex);
+//        mv.visitInsn(LSUB);
+//        mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(J)Ljava/lang/StringBuilder;", false);
+//        mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "toString", "()Ljava/lang/String;", false);
+//        mv.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/String;)V", false);
+//        mv.visitInsn(Opcodes.POP);
+//        mv.visitInsn(IRETURN);
+//        mv.visitMaxs(6, 5);
+//        mv.visitEnd();
     }
 
 }
