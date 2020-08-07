@@ -16,6 +16,7 @@ import org.objectweb.asm.Opcodes;
 public class ConsumingTimeClassAdapter extends ClassVisitor {
 
     private boolean isAnnotationClass = false;
+    private String className = "";
 
     public ConsumingTimeClassAdapter(int api) {
         super(api);
@@ -38,6 +39,7 @@ public class ConsumingTimeClassAdapter extends ClassVisitor {
     @Override
     public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
         super.visit(version, access, name, signature, superName, interfaces);
+        className = name;
     }
 
     @Override
@@ -91,9 +93,10 @@ public class ConsumingTimeClassAdapter extends ClassVisitor {
         String message = "===access: "+access+", name: "+name+", desc: "+desc+", signature: "+signature+", exceptions: "+exceptions;
         System.out.println(message);
         if (INIT_NAME.equals(name)) {
+            //如果是构造方法, 就不插入代码
             return methodVisitor;
         }
-        methodVisitor = new ConsumingTimeMethodVisitor(Opcodes.ASM5, methodVisitor, access, name, desc, isAnnotationClass);
+        methodVisitor = new ConsumingTimeMethodVisitor(Opcodes.ASM7, methodVisitor, access, name, desc, isAnnotationClass, className);
         return methodVisitor;
     }
 

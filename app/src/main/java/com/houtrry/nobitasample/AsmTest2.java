@@ -42,4 +42,30 @@ public class AsmTest2 {
 
         return count;
     }
+
+    @NobitaConsumingTime
+    public int asmTestMethod4(int count) {
+
+        int result = 0;
+        for (int i = 0; i < count; i++) {
+            Log.d("asmTestMethod3", "sss->"+i);
+            result += i;
+        }
+
+        return result;
+    }
+
+    @NobitaConsumingTime
+    public String asmTestMethod5(int count) {
+
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < count; i++) {
+            Log.d("asmTestMethod3", "sss->"+i);
+            if (i %10 == 0) {
+                result.append("->").append(i).append(" ");
+            }
+        }
+
+        return result.toString();
+    }
 }

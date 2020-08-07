@@ -108,7 +108,7 @@ class NobitaTransform extends Transform {
                             ClassWriter classWriter = new ClassWriter(classReader, ClassWriter.COMPUTE_MAXS)
 
 
-                            ConsumingTimeClassAdapter classAdapter = new ConsumingTimeClassAdapter(Opcodes.ASM5, classWriter)
+                            ConsumingTimeClassAdapter classAdapter = new ConsumingTimeClassAdapter(Opcodes.ASM7, classWriter)
 
                             classReader.accept(classAdapter, ClassReader.SKIP_FRAMES)
                             def byteResult = classWriter.toByteArray()
