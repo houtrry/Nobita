@@ -138,13 +138,14 @@ public class ConsumingTimeMethodVisitor extends AdviceAdapter {
     @Override
     protected void onMethodExit(int opcode) {
         if (isAnnotationClass || isAnnotationMethod) {
+            System.out.println("==============================onMethodExit, Type.getDescriptor(StringBuilder.class) = "+Type.getDescriptor(StringBuilder.class));
             mv.visitMethodInsn(INVOKESTATIC, "java/lang/System", "currentTimeMillis", "()J", false);
             mv.visitVarInsn(LLOAD, timeLocalIndex);
             mv.visitInsn(LSUB);//此处的值在栈顶
             mv.visitVarInsn(LSTORE, timeLocalIndex);//因为后面要用到这个值所以先将其保存到本地变量表中
 
 
-//        int stringBuilderIndex = newLocal(Type.getType("java/lang/StringBuilder"));
+//        int stringBuilderIndex = newLocal(Type.getType("Ljava/lang/StringBuilder;"));
             int stringBuilderIndex = newLocal(Type.getType(StringBuilder.class));
             mv.visitTypeInsn(Opcodes.NEW, "java/lang/StringBuilder");
             mv.visitInsn(Opcodes.DUP);
