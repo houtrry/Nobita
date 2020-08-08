@@ -50,9 +50,15 @@ public class ConsumingTimeMethodVisitor extends AdviceAdapter {
 
     @Override
     public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
+        System.out.println("===>>>>>>>>>>>>>>>>>>>>>>>>>>visitAnnotation, desc: "+desc);
         if (Constants.NOBITA_ANNOTATION.equals(desc)) {
             isAnnotationMethod = true;
+        } else {
+            System.out.println("===>>>>>>>>>>>>>>>>>>>>>>>>>>visitAnnotation, desc->1: "+desc);
+            System.out.println("===>>>>>>>>>>>>>>>>>>>>>>>>>>visitAnnotation, desc->2: "+Constants.NOBITA_ANNOTATION);
         }
+        System.out.println("===>>>>>>>>>>>>>>>>>>>>>>>>>>visitAnnotation, isAnnotationMethod: "+isAnnotationMethod);
+
         return super.visitAnnotation(desc, visible);
     }
 
@@ -121,38 +127,42 @@ public class ConsumingTimeMethodVisitor extends AdviceAdapter {
 
     @Override
     protected void onMethodEnter() {
-        mv.visitMethodInsn(INVOKESTATIC, "java/lang/System", "currentTimeMillis", "()J", false);
-        timeLocalIndex = newLocal(Type.LONG_TYPE); //这个是LocalVariablesSorter 提供的功能，可以尽量复用以前的局部变量
-        mv.visitVarInsn(LSTORE, timeLocalIndex);
+        System.out.println("===>>>>>>>>>>>>>>>>>>>>>>>>>>onMethodEnter, isAnnotationMethod: "+isAnnotationMethod+", isAnnotationClass: "+isAnnotationClass);
+        if (isAnnotationClass || isAnnotationMethod) {
+            mv.visitMethodInsn(INVOKESTATIC, "java/lang/System", "currentTimeMillis", "()J", false);
+            timeLocalIndex = newLocal(Type.LONG_TYPE); //这个是LocalVariablesSorter 提供的功能，可以尽量复用以前的局部变量
+            mv.visitVarInsn(LSTORE, timeLocalIndex);
+        }
     }
 
     @Override
     protected void onMethodExit(int opcode) {
-        mv.visitMethodInsn(INVOKESTATIC, "java/lang/System", "currentTimeMillis", "()J", false);
-        mv.visitVarInsn(LLOAD, timeLocalIndex);
-        mv.visitInsn(LSUB);//此处的值在栈顶
-        mv.visitVarInsn(LSTORE, timeLocalIndex);//因为后面要用到这个值所以先将其保存到本地变量表中
+        if (isAnnotationClass || isAnnotationMethod) {
+            mv.visitMethodInsn(INVOKESTATIC, "java/lang/System", "currentTimeMillis", "()J", false);
+            mv.visitVarInsn(LLOAD, timeLocalIndex);
+            mv.visitInsn(LSUB);//此处的值在栈顶
+            mv.visitVarInsn(LSTORE, timeLocalIndex);//因为后面要用到这个值所以先将其保存到本地变量表中
 
 
 //        int stringBuilderIndex = newLocal(Type.getType("java/lang/StringBuilder"));
-        int stringBuilderIndex = newLocal(Type.getType(StringBuilder.class));
-        mv.visitTypeInsn(Opcodes.NEW, "java/lang/StringBuilder");
-        mv.visitInsn(Opcodes.DUP);
-        mv.visitMethodInsn(Opcodes.INVOKESPECIAL, "java/lang/StringBuilder", "<init>", "()V", false);
-        mv.visitVarInsn(Opcodes.ASTORE, stringBuilderIndex);//需要将栈顶的 stringbuilder 保存起来否则后面找不到了
-        mv.visitVarInsn(Opcodes.ALOAD, stringBuilderIndex);
-        mv.visitLdcInsn(className + "." + methodName + " time:");
-        mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(Ljava/lang/String;)Ljava/lang/StringBuilder;", false);
-        mv.visitInsn(Opcodes.POP);//将 append 方法的返回值从栈里 pop 出去
-        mv.visitVarInsn(Opcodes.ALOAD, stringBuilderIndex);
-        mv.visitVarInsn(Opcodes.LLOAD, timeLocalIndex);
-        mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(J)Ljava/lang/StringBuilder;", false);
-        mv.visitInsn(Opcodes.POP);//将 append 方法的返回值从栈里 pop 出去
-        mv.visitLdcInsn("Geek");
-        mv.visitVarInsn(Opcodes.ALOAD, stringBuilderIndex);
-        mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/lang/StringBuilder", "toString", "()Ljava/lang/String;", false);
-        mv.visitMethodInsn(Opcodes.INVOKESTATIC, "android/util/Log", "d", "(Ljava/lang/String;Ljava/lang/String;)I", false);//注意： Log.d 方法是有返回值的，需要 pop 出去
-        mv.visitInsn(Opcodes.POP);//插入字节码后要保证栈的清洁，不影响原来的逻辑，否则就会产生异常，也会对其他框架处理字节码造成影响
+            int stringBuilderIndex = newLocal(Type.getType(StringBuilder.class));
+            mv.visitTypeInsn(Opcodes.NEW, "java/lang/StringBuilder");
+            mv.visitInsn(Opcodes.DUP);
+            mv.visitMethodInsn(Opcodes.INVOKESPECIAL, "java/lang/StringBuilder", "<init>", "()V", false);
+            mv.visitVarInsn(Opcodes.ASTORE, stringBuilderIndex);//需要将栈顶的 stringbuilder 保存起来否则后面找不到了
+            mv.visitVarInsn(Opcodes.ALOAD, stringBuilderIndex);
+            mv.visitLdcInsn(className + "." + methodName + " cost time:");
+            mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(Ljava/lang/String;)Ljava/lang/StringBuilder;", false);
+            mv.visitInsn(Opcodes.POP);//将 append 方法的返回值从栈里 pop 出去
+            mv.visitVarInsn(Opcodes.ALOAD, stringBuilderIndex);
+            mv.visitVarInsn(Opcodes.LLOAD, timeLocalIndex);
+            mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(J)Ljava/lang/StringBuilder;", false);
+            mv.visitInsn(Opcodes.POP);//将 append 方法的返回值从栈里 pop 出去
+            mv.visitLdcInsn("Nobita");
+            mv.visitVarInsn(Opcodes.ALOAD, stringBuilderIndex);
+            mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/lang/StringBuilder", "toString", "()Ljava/lang/String;", false);
+            mv.visitMethodInsn(Opcodes.INVOKESTATIC, "android/util/Log", "d", "(Ljava/lang/String;Ljava/lang/String;)I", false);//注意： Log.d 方法是有返回值的，需要 pop 出去
+            mv.visitInsn(Opcodes.POP);//插入字节码后要保证栈的清洁，不影响原来的逻辑，否则就会产生异常，也会对其他框架处理字节码造成影响
 
 //        mv.visitFieldInsn(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;");
 //        mv.visitTypeInsn(NEW, "java/lang/StringBuilder");
@@ -170,6 +180,7 @@ public class ConsumingTimeMethodVisitor extends AdviceAdapter {
 //        mv.visitInsn(IRETURN);
 //        mv.visitMaxs(6, 5);
 //        mv.visitEnd();
+        }
     }
 
 }

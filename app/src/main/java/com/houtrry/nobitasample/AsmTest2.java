@@ -1,5 +1,6 @@
 package com.houtrry.nobitasample;
 
+import android.annotation.TargetApi;
 import android.util.Log;
 
 import com.houtrry.nobita.NobitaConsumingTime;
@@ -34,6 +35,7 @@ public class AsmTest2 {
     }
 
     @NobitaConsumingTime
+    @TargetApi(11)
     public int asmTestMethod3(int count) {
 
         for (int i = 0; i < count; i++) {
@@ -48,7 +50,7 @@ public class AsmTest2 {
 
         int result = 0;
         for (int i = 0; i < count; i++) {
-            Log.d("asmTestMethod3", "sss->"+i);
+            Log.d("asmTestMethod4", "sss->"+i);
             result += i;
         }
 
@@ -60,7 +62,7 @@ public class AsmTest2 {
 
         StringBuilder result = new StringBuilder();
         for (int i = 0; i < count; i++) {
-            Log.d("asmTestMethod3", "sss->"+i);
+            Log.d("asmTestMethod5", "sss->"+i);
             if (i %10 == 0) {
                 result.append("->").append(i).append(" ");
             }

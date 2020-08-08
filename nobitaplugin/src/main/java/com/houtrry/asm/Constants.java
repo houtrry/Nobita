@@ -7,5 +7,8 @@ package com.houtrry.asm;
  * @description:
  */
 public interface Constants {
-    String NOBITA_ANNOTATION = "Lcom/houtrry/nobita/NobitaConsumingTime";
+    /**
+     * 注意，最后有一个；分号
+     */
+    String NOBITA_ANNOTATION = "Lcom/houtrry/nobita/NobitaConsumingTime;";
 }
