@@ -20,5 +20,9 @@ class MainActivity : AppCompatActivity() {
             val asmTest = AsmTest()
             asmTest.asmTest()
         }
+        btnTestInsert.setOnClickListener {
+            val asmTest = InsertMethodTest()
+            asmTest.testInsertMethod()
+        }
     }
 }

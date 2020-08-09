@@ -96,6 +96,9 @@ public class ConsumingTimeClassAdapter extends ClassVisitor {
             //如果是构造方法, 就不插入代码
             return methodVisitor;
         }
+        if ("testInsertMethod".equals(name)) {
+            return new TestInsertMethodMethodVisitor(Opcodes.ASM7, methodVisitor, access, name, desc, isAnnotationClass, className);
+        }
         methodVisitor = new ConsumingTimeMethodVisitor(Opcodes.ASM7, methodVisitor, access, name, desc, isAnnotationClass, className);
         return methodVisitor;
     }
